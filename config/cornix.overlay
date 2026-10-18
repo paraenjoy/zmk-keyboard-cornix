@@ -1,0 +1,20 @@
+/*
+ * Cornix 전원 설정 (왼쪽·오른쪽 공통)
+ *
+ * DCDC 켜기: 출하 RMK 펌웨어 V1.6이 부팅 직후 양쪽 모두
+ * POWER->DCDCEN(0x40000578)과 DCDCEN0(0x40000580)에 1을 씀 = 기판에 인덕터가 있음.
+ * 같은 상태를 Zephyr 4.1 권장 방식(devicetree)으로 재현.
+ * 문제가 생기면 이 파일을 지우고 다시 빌드하면 원래(LDO)로 돌아감.
+ */
+
+#include <zephyr/dt-bindings/regulator/nrf5x.h>
+
+/* REG1: 일반 전원 경로 */
+&reg1 {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+/* REG0: 고전압(VDDH) 경로. 보통 전원 경로로 동작 중이면 영향 없음 */
+&reg0 {
+    status = "okay";
+};
