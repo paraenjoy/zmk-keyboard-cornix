@@ -6,7 +6,7 @@
  * 레이어
  *   0 Base : 키캡 인쇄 그대로. 오른쪽 엄지 가운데 = 한/영, 바깥 = Sym
  *   1 Num  : 왼쪽 엄지 바깥. 숫자·; - = ' [ ] `, 방향키 자리에 PgUp/PgDn/Home/End
- *   2 Sys  : 왼쪽 엄지 가운데. S·D·F 미디어, J·K·L 창 관리, BT1~3(인쇄 자리), BT 삭제, 부트로더
+ *   2 Sys  : 왼쪽 엄지 가운데. S·D·F 미디어, J·K·L 창 관리, BT1~3(인쇄 자리), BT 삭제, 부트로더, 배터리 표시(Bksp 자리)
  *   3 Sym  : 오른쪽 엄지 바깥. Num의 Shift 판 + 셋째 줄 F1~F12
  *
  * 노브 (모든 레이어 공통)
@@ -25,6 +25,7 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
+#include <behaviors/rgbled_widget.dtsi>
 
 #define BASE 0
 #define NUM  1
@@ -63,13 +64,14 @@
         /* 홈 줄 좌우 대칭: 왼손 S·D·F = 이전 곡·재생/정지·다음 곡, 오른손 J·K·L = 이전 창·다음 창·작업 관리자
          * 두 줄 모두 왼쪽 = 이전, 오른쪽 = 다음
          * BT 삭제는 Esc 자리(왼쪽 위), BT1~3은 그 아래 인쇄 자리
+ * 배터리 표시는 Bksp 자리(오른쪽 위): 어느 쪽에서 눌러도 양쪽이 각자 잔량을 색으로 보여줌
          * 부트로더는 눌린 쪽 반쪽에서만 실행되므로(locality = event source) B·N에 하나씩
          *   굽는 순서: Sys + N(오른쪽) 먼저, 그다음 Sys + B(왼쪽) — Sys 레이어 판단을 왼쪽(중앙)이 하기 때문
          * 명령 레이어라 빈자리는 통과시키지 않음(&none): 창을 넘긴 직후 잘못 누른 키가 새 창에 입력되지 않게 */
         sys {
             display-name = "Sys";
             bindings = <
-&bt BT_CLR     &none  &none       &none     &none       &none                         &none        &none            &none        &none            &none  &none
+&bt BT_CLR     &none  &none       &none     &none       &none                         &none        &none            &none        &none            &none  &ind_bat
 &bt BT_SEL 0   &none  &kp C_PREV  &kp C_PP  &kp C_NEXT  &none                         &none        &kp LA(LS(ESC))  &kp LA(ESC)  &kp LC(LS(ESC))  &none  &none
 &bt BT_SEL 1   &none  &none       &none     &none       &bootloader  &trans  &trans   &bootloader  &none            &none        &none            &none  &none
 &bt BT_SEL 2   &none  &none       &none     &none       &none                         &none        &none            &none        &none            &none  &none
