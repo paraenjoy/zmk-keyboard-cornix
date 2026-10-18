@@ -4,10 +4,10 @@
  *       (sha256 f85dd13d58398ea53e29f3fbab88d07b1f86ba09982e7eaac5d36eb314a327ab)
  *
  * 레이어
- *   0 Base : 키캡 인쇄 그대로. 오른쪽 엄지 가운데 = Sym, 바깥 = 한/영
+ *   0 Base : 키캡 인쇄 그대로. 오른쪽 엄지 가운데 = 한/영, 바깥 = Sym
  *   1 Num  : 왼쪽 엄지 바깥. 숫자·; - = ' [ ] `, 방향키 자리에 PgUp/PgDn/Home/End
  *   2 Sys  : 왼쪽 엄지 가운데. S·D·F 미디어, J·K·L 창 관리, BT1~3(인쇄 자리), BT 삭제, 부트로더
- *   3 Sym  : 오른쪽 엄지 가운데. Num의 Shift 판 + 셋째 줄 F1~F12
+ *   3 Sym  : 오른쪽 엄지 바깥. Num의 Shift 판 + 셋째 줄 F1~F12
  *
  * 노브 (모든 레이어 공통)
  *   왼쪽  : 돌리기 = 밝기 +/-, 누르기 = 한자
@@ -43,7 +43,7 @@
 &kp TAB    &kp Q     &kp W     &kp E    &kp R     &kp T                                    &kp Y      &kp U     &kp I      &kp O     &kp P      &kp BSPC
 &kp CAPS   &kp A     &kp S     &kp D    &kp F     &kp G                                    &kp H      &kp J     &kp K      &kp L     &kp BSLH   &kp RET
 &kp LSHFT  &kp Z     &kp X     &kp C    &kp V     &kp B       &kp LANG2      &kp C_MUTE   &kp N      &kp M     &kp COMMA  &kp DOT   &kp UP     &kp FSLH
-&kp LCTRL  &kp LGUI  &kp LALT  &mo NUM  &mo SYS   &kp SPACE                                &kp SPACE  &mo SYM   &kp LANG1  &kp LEFT  &kp DOWN   &kp RIGHT
+&kp LCTRL  &kp LGUI  &kp LALT  &mo NUM  &mo SYS   &kp SPACE                                &kp SPACE  &kp LANG1 &mo SYM    &kp LEFT  &kp DOWN   &kp RIGHT
             >;
             sensor-bindings = KNOBS;
         };
@@ -62,15 +62,17 @@
 
         /* 홈 줄 좌우 대칭: 왼손 S·D·F = 이전 곡·재생/정지·다음 곡, 오른손 J·K·L = 이전 창·다음 창·작업 관리자
          * 두 줄 모두 왼쪽 = 이전, 오른쪽 = 다음
-         * BT 삭제는 BT1~3 열 맨 위, 부트로더는 반대쪽 오른쪽 위 구석
+         * BT 삭제는 Esc 자리(왼쪽 위), BT1~3은 그 아래 인쇄 자리
+         * 부트로더는 눌린 쪽 반쪽에서만 실행되므로(locality = event source) B·N에 하나씩
+         *   굽는 순서: Sys + N(오른쪽) 먼저, 그다음 Sys + B(왼쪽) — Sys 레이어 판단을 왼쪽(중앙)이 하기 때문
          * 명령 레이어라 빈자리는 통과시키지 않음(&none): 창을 넘긴 직후 잘못 누른 키가 새 창에 입력되지 않게 */
         sys {
             display-name = "Sys";
             bindings = <
-&bt BT_CLR     &none  &none       &none     &none       &none                    &none  &none            &none        &none            &none  &bootloader
-&bt BT_SEL 0   &none  &kp C_PREV  &kp C_PP  &kp C_NEXT  &none                    &none  &kp LA(LS(ESC))  &kp LA(ESC)  &kp LC(LS(ESC))  &none  &none
-&bt BT_SEL 1   &none  &none       &none     &none       &none   &trans  &trans   &none  &none            &none        &none            &none  &none
-&bt BT_SEL 2   &none  &none       &none     &none       &none                    &none  &none            &none        &none            &none  &none
+&bt BT_CLR     &none  &none       &none     &none       &none                         &none        &none            &none        &none            &none  &none
+&bt BT_SEL 0   &none  &kp C_PREV  &kp C_PP  &kp C_NEXT  &none                         &none        &kp LA(LS(ESC))  &kp LA(ESC)  &kp LC(LS(ESC))  &none  &none
+&bt BT_SEL 1   &none  &none       &none     &none       &bootloader  &trans  &trans   &bootloader  &none            &none        &none            &none  &none
+&bt BT_SEL 2   &none  &none       &none     &none       &none                         &none        &none            &none        &none            &none  &none
             >;
             sensor-bindings = KNOBS;
         };
